@@ -8,12 +8,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function FavoritesScreen() {
   const [favSongs, setFavSongs] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState({ username: "", email: "" });
 
   const fetchFavorites = async () => {
     try {
-      const userId = await AsyncStorage.getItem("userID")
+      const username = await AsyncStorage.getItem("username");
+      const email = await AsyncStorage.getItem("email");
+      const userId = await AsyncStorage.getItem("userID");
+      setUser({ username: username || "Guest", email: email || "" });
+
       const response = await fetch(
-        `http://${IP_back}:4444/favorites/${userId}`,
+        `http://${IP_back}:4444/favorites/playlist/${userId}`,
       );
       const data = await response.json();
       setFavSongs(data);
@@ -31,21 +36,21 @@ export default function FavoritesScreen() {
   );
 
   return (
-    <View className="flex-1 gap-4">
+    <View className="flex-1 gap-4 ">
       <View
         className="bg-white w-full
         rounded-b-[70px] drop-shadow-xl
-        items-center pt-20 gap-3"
+        items-center pt-20 gap-3 relative"
       >
         <Text className="text-2xl font-satoshi-bold dark:text-white">
           Profile
         </Text>
-        <View className="border h-20 w-20 rounded-full" />
+        <View className="border h-24 w-24 rounded-full" />
         <Text className="font-satoshi dark:text-white">
-          {AsyncStorage.getItem("email")}
+          {user.email}
         </Text>
         <Text className="text-3xl font-satoshi-bold dark:text-white">
-          {AsyncStorage.getItem("username")}
+          {user.username}
         </Text>
         <View className="flex-row w-full justify-evenly my-8">
           <View className="items-center">
@@ -69,6 +74,12 @@ export default function FavoritesScreen() {
         </Text>
         <PlayList songs={favSongs} isPhoto={true} />
       </View>
+
+      <Image 
+      source={require("@/assets/images/profile.png")}
+      className=" left-0 absolute w-20 h-64"
+      resizeMode="stretch"
+      />
     </View>
   );
 }

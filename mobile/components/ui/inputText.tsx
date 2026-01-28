@@ -14,9 +14,9 @@ export default function AppInput({ placeholder, isPassword, value, onChangeText 
   const [secure, setSecure] = useState(isPassword);
 
   return (
-    <View className="w-full relative justify-center mb-4">
+    <View className="w-full h-full relative justify-center mb-4">
       <TextInput
-        className="w-full h-24 px-8 rounded-[30px] border border-gray-300 dark:border-gray-800 
+        className="w-full h-full px-8 rounded-[30px] border border-gray-300 dark:border-gray-800 
                    text-[#383838] dark:text-white font-satoshi-bold text-xl"
         placeholder={placeholder}
         placeholderTextColor="#A7A7A7"

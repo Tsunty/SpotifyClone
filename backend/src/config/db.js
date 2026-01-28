@@ -12,7 +12,6 @@ db.serialize(() => {
     )
   `);
 
-  
   // Создаем таблицу избранного
   db.run(`
     CREATE TABLE IF NOT EXISTS favorites (

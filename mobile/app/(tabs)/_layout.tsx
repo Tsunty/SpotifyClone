@@ -55,7 +55,7 @@ export default function TabsLayout() {
             }}
           />
           <Tabs.Screen
-            name="favorites"
+            name="artists"
             options={{
               tabBarIcon: ({ focused }) => (
                 <View className="items-center justify-center mt-4 gap-3 h-full">

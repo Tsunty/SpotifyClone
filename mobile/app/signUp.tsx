@@ -31,8 +31,6 @@ export default function SignUp() {
       return;
     }
 
-    //   setLoading(true);
-
     try {
       const response = await fetch(`http://${IP_back}:4444/auth/register`, {
         method: "POST",
@@ -46,22 +44,14 @@ export default function SignUp() {
         }),
       });
 
-      // В fetch нужно сначала получить данные, а потом проверять статус
-      const data = await response.json();
-
       if (!response.ok) {
-        // Если статус 400, 404, 500 и т.д.
-        throw new Error(data.message || "Something went wrong");
-      }
-
-      if (data.token) {
+        throw new Error("Something went wrong");
+      } else {
         alert("Account created!");
-        router.replace("/signIn"); // Переход в приложение
+        router.replace("/signIn");
       }
     } catch (error: any) {
       alert(error.message);
-    } finally {
-      // setLoading(false);
     }
   };
 
@@ -95,22 +85,29 @@ export default function SignUp() {
         </View>
 
         <View className="w-4/5 mt-7">
-          <AppInput
-            placeholder="Username"
-            onChangeText={(text) => handleChange("user", text)}
-            value={formData.user}
-          />
-          <AppInput
-            placeholder="Enter Email"
-            onChangeText={(text) => handleChange("email", text)}
-            value={formData.email}
-          />
-          <AppInput
-            placeholder="Password"
-            isPassword={true}
-            onChangeText={(text) => handleChange("password", text)}
-            value={formData.password}
-          />
+          <View className="w-full h-24 mt-4">
+            <AppInput
+              placeholder="Username"
+              onChangeText={(text) => handleChange("user", text)}
+              value={formData.user}
+            />
+          </View>
+          <View className="w-full h-24 mt-4">
+            <AppInput
+              placeholder="Enter Email"
+              onChangeText={(text) => handleChange("email", text)}
+              value={formData.email}
+            />
+          </View>
+          <View className="w-full h-24 mt-4">
+            <AppInput
+              placeholder="Password"
+              isPassword={true}
+              onChangeText={(text) => handleChange("password", text)}
+              value={formData.password}
+            />
+          </View>
+
           <TouchableOpacity
             className="bg-[#42C83C] w-full h-24 rounded-[30px] items-center justify-center mt-7"
             onPress={() => handleRegister()}

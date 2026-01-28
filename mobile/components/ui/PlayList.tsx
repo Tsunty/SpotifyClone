@@ -23,7 +23,7 @@ export default function PlayList({ songs, isPhoto }: PlayListProps) {
     try {
       const userId = await AsyncStorage.getItem("userID");
       const response = await fetch(
-        `http://${IP_back}:4444/favorites-ids/${userId}`,
+        `http://${IP_back}:4444/favorites/ArrIds/${userId}`,
       );
       const ids = await response.json();
       setFavoriteIds(ids);
@@ -70,7 +70,7 @@ export default function PlayList({ songs, isPhoto }: PlayListProps) {
   };
 
   return (
-    <View className="w-full px-8 flex-1">
+    <View className="w-full px-10 flex-1">
       <FlatList
         data={songs}
         keyExtractor={(item) => item.id.toString()}
@@ -78,7 +78,6 @@ export default function PlayList({ songs, isPhoto }: PlayListProps) {
         contentContainerStyle={{ paddingBottom: 160 }}
         renderItem={({ item }) => {
           const isCurrent = currentTrack?.id === item.id;
-          // Проверяем, закрашивать ли сердечко
           const isLiked = favoriteIds.includes(item.id);
 
           return (
@@ -108,7 +107,7 @@ export default function PlayList({ songs, isPhoto }: PlayListProps) {
                 <View className="flex-1">
                   <Text
                     numberOfLines={1}
-                    className={`text-lg font-satoshi-bold ${
+                    className={`text-lg font-satoshi-bold w-3/4 ${
                       isCurrent
                         ? "text-[#42C83C]"
                         : "dark:text-white text-[#383838]"

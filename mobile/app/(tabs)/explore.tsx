@@ -1,22 +1,62 @@
-import SpotifySVG_2 from '@/assets/svg/Spotify_2';
-import ButtonBack from '@/components/ui/ButtonBack';
-import { ImageBackground, TouchableOpacity, View, Text, Image } from 'react-native';
+import SpotifySVG_3 from "@/assets/svg/Spotify_3";
+import React, { useEffect, useState } from "react";
+import PlayList from "@/components/ui/PlayList";
+import { View } from "react-native";
+import { IP_back, Track } from "@/components/interfaces";
+import * as SecureStore from "expo-secure-store";
+import { router } from "expo-router";
+import InputText from "@/components/ui/inputText";
 
 export default function Explore() {
+  const [songs, setSongs] = useState<Track[]>([]);
+  const [query, setQuery] = useState("");
+
+  const SearchSongs = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("userToken");
+      if (!token) {
+        router.replace("/getStarted");
+        return;
+      }
+      const response = await fetch(
+        `http://${IP_back}:4444/songs/search/${query}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status === 401 || response.status === 403) {
+        await SecureStore.deleteItemAsync("userToken");
+        router.replace("/getStarted");
+        return;
+      }
+      const data = await response.json();
+
+      setSongs(data);
+    } catch (error) {
+      console.error("Failed to load songs", error);
+    }
+  };
 
   return (
-      <View className='flex-1 w-full h-full'>
-            <View className='h-full w-full items-center justify-center -mt-20 gap-6'>
-                <SpotifySVG_2/>
-                <Text className='text-[#383838] dark:text-white text-center font-satoshi-bold
-                                        text-3xl mt-12 mb-3'>
-                                        Work In Progress
-                </Text>
-                <Text className='text-gray-500 text-center font-satoshi
-                                    text-2xl'>
-                                    Just Enjoy What You Have.
-                </Text>
-            </View>
+    <View className="flex-1 bg-white dark:bg-[#0D0C0C]">
+      <View className="w-full h-full items-center">
+        <View className="mt-20 mb-10">
+          <SpotifySVG_3 />
         </View>
+        <View className="h-16 w-1/2">
+          <InputText
+            placeholder="search"
+            onChangeText={(text) => {
+              setQuery(text);
+              SearchSongs();
+            }}
+          />
+        </View>
+        <PlayList songs={songs} />
+      </View>
+    </View>
   );
 }

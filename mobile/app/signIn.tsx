@@ -5,13 +5,8 @@ import AppInput from "@/components/ui/inputText";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import {
-  TouchableOpacity,
-  View,
-  Text,
-  Image,
-} from "react-native";
-import * as SecureStore from 'expo-secure-store';
+import { TouchableOpacity, View, Text, Image } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
 export default function SignIn() {
   const router = useRouter();
@@ -25,7 +20,6 @@ export default function SignIn() {
       return;
     }
 
-    // setLoading(true);
     try {
       const response = await fetch(`http://${IP_back}:4444/auth/login`, {
         method: "POST",
@@ -37,16 +31,15 @@ export default function SignIn() {
       if (!response.ok) throw new Error(data.message || "Login failed");
 
       if (data.token) {
+        // Заполняем хранилища
         await SecureStore.setItemAsync("userToken", data.token);
-        await AsyncStorage.setItem("userID", (data.user.id).toString());
+        await AsyncStorage.setItem("userID", data.user.id.toString());
         await AsyncStorage.setItem("username", data.user.username);
         await AsyncStorage.setItem("email", data.user.email);
         router.replace("/(tabs)"); // Переход в приложение
       }
     } catch (error: any) {
       alert(error.message);
-    } finally {
-      //   setLoading(false);
     }
   };
   return (
@@ -78,24 +71,32 @@ export default function SignIn() {
           </TouchableOpacity>
         </View>
 
-        <View className="w-4/5 mt-7">
-          <AppInput
-            placeholder="Enter Username Or Email"
-            onChangeText={(text) => handleChange("email", text)}
-          />
-          <AppInput
-            placeholder="Password"
-            isPassword={true}
-            onChangeText={(text) => handleChange("password", text)}
-          />
-          <TouchableOpacity
-            className="bg-[#42C83C] w-full h-24 rounded-[30px] items-center justify-center mt-7"
-            onPress={() => handleLogin()}
-          >
-            <Text className="text-white font-satoshi-bold text-2xl">
-              Sign In
-            </Text>
-          </TouchableOpacity>
+        <View className="w-4/5 mt-7 gap-5">
+          <View className="w-full h-24">
+            <AppInput
+              placeholder="Enter Username Or Email"
+              onChangeText={(text) => handleChange("email", text)}
+            />
+          </View>
+
+          <View className="w-full h-24">
+            <AppInput
+              placeholder="Password"
+              isPassword={true}
+              onChangeText={(text) => handleChange("password", text)}
+            />
+          </View>
+
+          <View>
+            <TouchableOpacity
+              className="bg-[#42C83C] w-full h-24 rounded-[30px] items-center justify-center mt-7"
+              onPress={() => handleLogin()}
+            >
+              <Text className="text-white font-satoshi-bold text-2xl">
+                Sign In
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View className="flex-row items-center my-8 w-4/5">
